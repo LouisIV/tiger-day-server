@@ -40,7 +40,7 @@ def update_or_create(email, qr):
     
     qr_codes = json_conf.get(config.QR_COL)
     if qr not in qr_codes:
-        if !json_conf.append(config.QR_COL, qr):
+        if not json_conf.append(config.QR_COL, qr):
             print("Something went wrong")
         else:
             user_file.SetContentString(json_conf.dump())
