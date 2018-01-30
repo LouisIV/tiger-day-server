@@ -1,6 +1,7 @@
 import os
 import sys
 from flask import Flask
+from flask_cors import CORS, cross_origin
 import json
 import config
 import requests
@@ -9,6 +10,8 @@ from GoogleDrive import GoogleDriveManager
 from JsonConfig import JsonConfig as jsConf
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 file_manager = GoogleDriveManager()
 
 THREADING = False
@@ -52,6 +55,7 @@ def update_or_create(email, qr):
         sys.stdout.flush()
 
 @app.route('/', methods=['POST'])
+@cross_origin()
 def handle_post_request():
     print("Recieved web request.")
     sys.stdout.flush()
@@ -75,7 +79,6 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=port,
         debug=FLASK_DEBUG,
-        threaded=THREADING
     )
     print("App started")
     sys.stdout.flush()
