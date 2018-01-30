@@ -62,16 +62,15 @@ def handle_post_request():
 
     try:
         json_body = request.get_json()
+
+        if None in (json_body['email'], json_body['qr']):
+            print("Bad Formating")
+            sys.stdout.flush()
+            return 500
+        else:
+            return update_or_create(json_body['email'], json_body['qr'])
     except Exception("error"):
         return 500
-
-    if None in (json_body['email'], json_body['qr']):
-        print("Bad Formating")
-        sys.stdout.flush()
-        return 500
-    else:
-        return update_or_create(json_body['email'], json_body['qr'])
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
