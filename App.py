@@ -1,4 +1,5 @@
 import os
+import sys
 from flask import Flask
 import json
 import config
@@ -42,15 +43,18 @@ def update_or_create(email, qr):
     if qr not in qr_codes:
         if not json_conf.append(config.QR_COL, qr):
             print("Something went wrong")
+            sys.stdout.flush()
         else:
             user_file.SetContentString(json_conf.dump())
             file_manager.upload_file(user_file)
     else:
         print("You already scanned that qr code!")
+        sys.stdout.flush()
 
 @app.route('/', methods=['POST'])
 def handle_post_request():
     print("Recieved web request.")
+    sys.stdout.flush()
 
     try:
         json_body = request.get_json()
@@ -59,6 +63,7 @@ def handle_post_request():
 
     if None in (json_body['email'], json_body['qr']):
         print("Bad Formating")
+        sys.stdout.flush()
         return 500
     else:
         return update_or_create(json_body['email'], json_body['qr'])
@@ -71,3 +76,5 @@ if __name__ == "__main__":
         debug=FLASK_DEBUG,
         threaded=THREADING
     )
+    print("App started")
+    sys.stdout.flush()
