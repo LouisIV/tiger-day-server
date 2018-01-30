@@ -4,3 +4,4 @@ ATLAS = "atlas.csv"
 
 """ GDRIVE """
 SETTINGS_FILE = "settings.yaml"
+QR_COL = "qr"
