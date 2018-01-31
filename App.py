@@ -52,7 +52,7 @@ def update_or_create(email, qr):
         print("You already scanned that qr code!")
         sys.stdout.flush()
 
-@app.route('/', methods=['POST'])
+@app.route('/')
 def handle_post_request():
     print("Recieved web request.")
     sys.stdout.flush()
