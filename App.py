@@ -59,6 +59,8 @@ def update_or_create(email, qr):
     else:
         json_conf.set(config.QR_COL, qr)
         user_file.SetContentString(json_conf.dump())
+        print("++ %s" % json_conf.dump())
+        sys.stdout.flush()
         file_manager.upload_file(user_file)
         
 

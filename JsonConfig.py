@@ -31,7 +31,7 @@ class JsonConfig():
         if self.filename:
             return self.__get_file()
         elif self.working_json:
-            return self.working_json
+            return str(self.working_json)
         else:
             raise RuntimeError("Nothing to dump!")
 
