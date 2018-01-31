@@ -43,8 +43,13 @@ def update_or_create(email, qr):
     # atlas_file = _load_atlas()
     user_file = file_manager.search_first(query_title=_convert_email_to_title(email))
     json_conf = jsConf(json=json.load(user_file.GetContentString()))
-    
+    json_conf.set(config.QR_COL, qr)
+    user_file.SetContentString(json_conf.dump())
+    print("++ %s" % json_conf.dump())
+    sys.stdout.flush()
+    file_manager.upload_file(user_file)
     qr_codes = json_conf.get(config.QR_COL)
+    
     if qr_codes:
         if qr in qr_codes:
             print("You already scanned that qr code!")
