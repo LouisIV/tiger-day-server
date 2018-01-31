@@ -10,11 +10,13 @@ from GoogleDrive import GoogleDriveManager
 from JsonConfig import JsonConfig as jsConf
 
 app = Flask(__name__)
-CORS(app)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 file_manager = GoogleDriveManager()
 
 THREADING = False
 FLASK_DEBUG = True
+
 
 '''
 def _load_atlas():
@@ -52,18 +54,23 @@ def update_or_create(email, qr):
         print("You already scanned that qr code!")
         sys.stdout.flush()
 
-@app.route('/')
+@app.route('/', methods=['POST'])
+@cross_origin()
 def handle_post_request():
     print("Recieved web request.")
     sys.stdout.flush()
-    json_body = request.get_json()
 
-    if None in (json_body['email'], json_body['qr']):
-        print("Bad Formating")
-        sys.stdout.flush()
+    try:
+        json_body = request.get_json()
+
+        if None in (json_body['email'], json_body['qr']):
+            print("Bad Formating")
+            sys.stdout.flush()
+            return 500
+        else:
+            return update_or_create(json_body['email'], json_body['qr'])
+    except Exception("error"):
         return 500
-    else:
-        return update_or_create(json_body['email'], json_body['qr'])
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
