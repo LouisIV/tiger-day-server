@@ -65,7 +65,7 @@ def update_or_create(email, qr):
         sys.stdout.flush()
 
 @app.route('/', methods=['POST'])
-@cross_origin()
+@crossdomain(origin='*')
 def handle_post_request():
     print("Recieved web request.")
     sys.stdout.flush()
