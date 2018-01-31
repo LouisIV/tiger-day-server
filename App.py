@@ -37,22 +37,30 @@ def _convert_email_to_title(email):
 
 
 def update_or_create(email, qr):
+    print("Email: %s, QR: %s" % (email, qr))
+    sys.stdout.flush()
 
     # atlas_file = _load_atlas()
     user_file = file_manager.search_first(query_title=_convert_email_to_title(email))
     json_conf = jsConf(json=json.load(user_file.GetContentString()))
     
     qr_codes = json_conf.get(config.QR_COL)
-    if qr not in qr_codes:
-        if not json_conf.append(config.QR_COL, qr):
-            print("Something went wrong")
+    if qr_codes:
+        if qr in qr_codes:
+            print("You already scanned that qr code!")
             sys.stdout.flush()
         else:
-            user_file.SetContentString(json_conf.dump())
-            file_manager.upload_file(user_file)
+            if not json_conf.append(config.QR_COL, qr):
+                print("Something went wrong")
+                sys.stdout.flush()
+            else:
+                user_file.SetContentString(json_conf.dump())
+                file_manager.upload_file(user_file)
     else:
-        print("You already scanned that qr code!")
-        sys.stdout.flush()
+        json_conf.set(config.QR_COL, qr)
+        user_file.SetContentString(json_conf.dump())
+        file_manager.upload_file(user_file)
+        
 
 @app.route('/', methods=['POST'])
 @cross_origin()
