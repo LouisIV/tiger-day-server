@@ -69,7 +69,7 @@ def handle_post_request():
             return 500
         else:
             return update_or_create(json_body['email'], json_body['qr'])
-    except Exception("error"):
+    except:
         return 500
 
 if __name__ == "__main__":
