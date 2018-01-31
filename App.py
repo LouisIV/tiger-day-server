@@ -42,6 +42,7 @@ def update_or_create(email, qr):
 
     user_file = file_manager.search_first(query_title=_convert_email_to_title(email))
     user_file.SetContentString(user_file.GetContentString() + "," + qr)
+    file_manager.upload_file(user_file)
     '''
     json_conf = jsConf(json=json.load(user_file.GetContentString()))
     json_conf.set(config.QR_COL, qr)
