@@ -10,8 +10,8 @@ from GoogleDrive import GoogleDriveManager
 from JsonConfig import JsonConfig as jsConf
 
 app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+# cors = CORS(app)
+# app.config['CORS_HEADERS'] = 'Content-Type'
 file_manager = GoogleDriveManager()
 
 THREADING = False
