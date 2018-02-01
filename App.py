@@ -1,7 +1,7 @@
 import os
 import sys
 from flask import Flask
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import json
 import config
 import requests
@@ -10,7 +10,7 @@ from GoogleDrive import GoogleDriveManager
 from JsonConfig import JsonConfig as jsConf
 
 app = Flask(__name__)
-# cors = CORS(app)
+CORS(app)
 # app.config['CORS_HEADERS'] = 'Content-Type'
 file_manager = GoogleDriveManager()
 
@@ -49,13 +49,14 @@ def update_or_create(email, qr):
     # For the user
     response = flask.jsonify({'drive_status': '200'})
     return response
-
+'''
 @app.after_request
 def after_request(response):
     header = response.headers
     header.add('Access-Control-Allow-Origin','*')
     header.add('Content-Type','application/json')
     return response
+'''
 
 @app.route('/')
 def handle_post_request():
