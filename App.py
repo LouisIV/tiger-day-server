@@ -50,6 +50,7 @@ def update_or_create(email, qr):
 def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
+    header['Content-Type'] = 'application/json'
     return response
 
 @app.route('/', methods=['POST'])
