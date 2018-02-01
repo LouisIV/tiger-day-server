@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 import json
 import config
@@ -47,7 +47,7 @@ def update_or_create(email, qr):
     file_manager.upload_file(user_file)
 
     # For the user
-    response = flask.jsonify({'drive_status': '200'})
+    response = jsonify({'drive_status': '200'})
     return response
 '''
 @app.after_request
@@ -63,7 +63,7 @@ def handle_post_request():
     print("Recieved web request.")
     sys.stdout.flush()
 
-    response = flask.jsonify({'drive_status': '200'})
+    response = jsonify({'drive_status': '200'})
 
     try:
         json_body = request.get_json()
@@ -72,7 +72,7 @@ def handle_post_request():
             print("Bad Formating")
             sys.stdout.flush()
 
-            response = flask.jsonify({'drive_status': '400'})
+            response = jsonify({'drive_status': '400'})
             return response
         else:
             return update_or_create(json_body['email'], json_body['qr'])
