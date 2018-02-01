@@ -17,7 +17,6 @@ file_manager = GoogleDriveManager()
 THREADING = False
 FLASK_DEBUG = True
 
-
 '''
 def _load_atlas():
     atlas_file = file_manager.find_existing_file(query_title=config.ATLAS)
@@ -37,46 +36,23 @@ def _convert_email_to_title(email):
 
 
 def update_or_create(email, qr):
+
+    # So we can see it in the console
     print("Email: %s, QR: %s" % (email, qr))
     sys.stdout.flush()
 
+    # Write to google drive
     user_file = file_manager.search_first(query_title=_convert_email_to_title(email))
     user_file.SetContentString(user_file.GetContentString() + "," + qr)
     file_manager.upload_file(user_file)
-    '''
-    json_conf = jsConf(json=json.load(user_file.GetContentString()))
-    json_conf.set(config.QR_COL, qr)
 
-    user_file.SetContentString(json_conf.dump())
-    print("++ %s" % json_conf.dump())
-    sys.stdout.flush()
-    file_manager.upload_file(user_file)
-    '''
-    '''
-    qr_codes = json_conf.get(config.QR_COL)
-
-    if qr_codes:
-        if qr in qr_codes:
-            print("You already scanned that qr code!")
-            sys.stdout.flush()
-        else:
-            if not json_conf.append(config.QR_COL, qr):
-                print("Something went wrong")
-                sys.stdout.flush()
-            else:
-                user_file.SetContentString(json_conf.dump())
-                file_manager.upload_file(user_file)
-    else:
-        json_conf.set(config.QR_COL, qr)
-        user_file.SetContentString(json_conf.dump())
-        print("++ %s" % json_conf.dump())
-        sys.stdout.flush()
-        file_manager.upload_file(user_file)
-    '''
-        
+@app.after_request
+def after_request(response):
+    header = response.headers
+    header['Access-Control-Allow-Origin'] = '*'
+    return response
 
 @app.route('/', methods=['POST'])
-@cross_origin()
 def handle_post_request():
     print("Recieved web request.")
     sys.stdout.flush()
@@ -87,11 +63,11 @@ def handle_post_request():
         if None in (json_body['email'], json_body['qr']):
             print("Bad Formating")
             sys.stdout.flush()
-            return 500
+            return "OP_1"
         else:
             return update_or_create(json_body['email'], json_body['qr'])
     except:
-        return 500
+        return "OP_2"
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
