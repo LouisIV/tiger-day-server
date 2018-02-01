@@ -58,7 +58,7 @@ def after_request(response):
     return response
 '''
 
-@app.route('/')
+@app.route('/', methods=['POST'])
 def handle_post_request():
     print("Recieved web request.")
     sys.stdout.flush()
