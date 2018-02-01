@@ -46,17 +46,23 @@ def update_or_create(email, qr):
     user_file.SetContentString(user_file.GetContentString() + "," + qr)
     file_manager.upload_file(user_file)
 
+    # For the user
+    response = flask.jsonify({'drive_status': '200'})
+    return response
+
 @app.after_request
 def after_request(response):
     header = response.headers
-    header['Access-Control-Allow-Origin'] = '*'
-    header['Content-Type'] = 'application/json'
+    header.add('Access-Control-Allow-Origin','*')
+    header.add('Content-Type','application/json')
     return response
 
-@app.route('/', methods=['POST'])
+@app.route('/')
 def handle_post_request():
     print("Recieved web request.")
     sys.stdout.flush()
+
+    response = flask.jsonify({'drive_status': '200'})
 
     try:
         json_body = request.get_json()
@@ -64,11 +70,13 @@ def handle_post_request():
         if None in (json_body['email'], json_body['qr']):
             print("Bad Formating")
             sys.stdout.flush()
-            return "OP_1"
+
+            response = flask.jsonify({'drive_status': '400'})
+            return response
         else:
             return update_or_create(json_body['email'], json_body['qr'])
     except:
-        return "OP_2"
+        return response
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
