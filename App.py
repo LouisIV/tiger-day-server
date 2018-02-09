@@ -2,7 +2,7 @@ import os
 import sys
 from flask import Flask, jsonify
 from flask_cors import CORS
-import json
+from flask import json
 import config
 import requests
 from flask import Flask, request
@@ -11,52 +11,54 @@ from JsonConfig import JsonConfig as jsConf
 
 app = Flask(__name__)
 CORS(app)
-# app.config['CORS_HEADERS'] = 'Content-Type'
 file_manager = GoogleDriveManager()
 
-THREADING = False
 FLASK_DEBUG = True
-
-'''
-def _load_atlas():
-    atlas_file = file_manager.find_existing_file(query_title=config.ATLAS)
-    if atlas_file:
-        atlas_string = atlas_file.GetContentString()
-        
-        return atlas_file
-    print("Error loading Atlas File")
-    return False
-'''
-
 
 def _convert_email_to_title(email):
     # title = email.replace('@', '')
     # Addtional changes here
     return email
 
-
-def update_or_create(email, qr):
+def update_or_create(email, qr, notes, priority):
 
     # So we can see it in the console
     print("Email: %s, QR: %s" % (email, qr))
     sys.stdout.flush()
 
-    # Write to google drive
+    # Create or find the file
     user_file = file_manager.search_first(query_title=_convert_email_to_title(email))
-    user_file.SetContentString(user_file.GetContentString() + "," + qr)
+    if !user_file:
+        return jsonify({'drive_status': '500'})
+
+    # Load the file
+    user_dict = json.loads(user_file.GetContentString())
+
+    if !user_dict:
+        return jsonify({'drive_status': '500'})
+
+    if 'email' not in user_dict:
+        user_dict['email'] = email
+
+    if 'scans' not in user_dict:
+        user_dict['scans'] = []
+
+    # Create the scan object, which we will upload.
+    scan = {}
+    scan['qr'] = qr
+    scan['notes'] = notes
+    scan['priority'] = raing
+
+    # Add the object to the dictionary
+    user_dict['scans'].append(scan)
+
+    # Set the contents of dictionary as the content and upload
+    user_file.SetContentString(json.dumps(user_dict))
     file_manager.upload_file(user_file)
 
     # For the user
     response = jsonify({'drive_status': '200'})
     return response
-'''
-@app.after_request
-def after_request(response):
-    header = response.headers
-    header.add('Access-Control-Allow-Origin','*')
-    header.add('Content-Type','application/json')
-    return response
-'''
 
 @app.route('/', methods=['POST'])
 def handle_post_request():
@@ -68,14 +70,15 @@ def handle_post_request():
     try:
         json_body = request.get_json()
 
-        if None in (json_body['email'], json_body['qr']):
+        if None in (json_body['email'], json_body['qr'], json_body['notes'], json_body['priority']):
             print("Bad Formating")
             sys.stdout.flush()
 
             response = jsonify({'drive_status': '400'})
             return response
         else:
-            return update_or_create(json_body['email'], json_body['qr'])
+            return update_or_create(json_body['email'], json_body['qr'],
+                                    json_body['notes'], json_body['priority'])
     except:
         return response
 
