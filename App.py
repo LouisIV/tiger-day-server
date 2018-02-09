@@ -28,7 +28,7 @@ def update_or_create(email, qr, notes, priority):
 
     # Create or find the file
     user_file = file_manager.search_first(query_title=_convert_email_to_title(email))
-    if !user_file:
+    if not user_file:
         return jsonify({'drive_status': '500'})
 
     # Load the file
