@@ -34,6 +34,9 @@ def update_or_create(email, qr, notes, priority):
     # Load the file
     user_dict = json.loads(user_file.GetContentString())
 
+    print(user_dict)
+    sys.stdout.flush()
+
     if not user_dict:
         return jsonify({'drive_status': '500'})
 
