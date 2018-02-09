@@ -62,8 +62,9 @@ def update_or_create(email, qr, notes, priority):
     sys.stdout.flush()
 
     # Set the contents of dictionary as the content and upload
-    user_file.SetContentString(json.dumps(user_dict))
-    file_manager.upload_file(user_file)
+    file_manager.write_to_file(user_file, json.dumps(user_dict), upload=True)
+    # user_file.SetContentString(json.dumps(user_dict))
+    # file_manager.upload_file(user_file)
 
     # For the user
     response = jsonify({'drive_status': '200'})
