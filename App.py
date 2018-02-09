@@ -55,6 +55,12 @@ def update_or_create(email, qr, notes, priority):
     # Add the object to the dictionary
     user_dict['scans'].append(scan)
 
+    print(user_dict)
+    sys.stdout.flush()
+
+    print(json.dumps(user_dict))
+    sys.stdout.flush()
+
     # Set the contents of dictionary as the content and upload
     user_file.SetContentString(json.dumps(user_dict))
     file_manager.upload_file(user_file)
