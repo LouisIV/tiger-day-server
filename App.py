@@ -32,20 +32,20 @@ def update_or_create(email, qr, notes, priority):
     if not user_file:
         return jsonify({'drive_status': '500'})
 
+    user_dict = {}
+
     # Load the file
-    user_dict = json.loads(user_file.GetContentString())
+    if not user_file.GetContentString() or user_file.GetContentString() == "":
+        user_dict["email"] = email
+        user_dict["scans"] = []
+    else:
+        user_dict = json.loads(user_file.GetContentString())
 
     print("`user_dict`: %s" % str(user_dict))
     sys.stdout.flush()
 
     if not user_dict:
         return jsonify({'drive_status': '500'})
-
-    if 'email' not in user_dict:
-        user_dict['email'] = email
-
-    if 'scans' not in user_dict:
-        user_dict['scans'] = []
 
     # Create the scan object, which we will upload.
     scan = {}
