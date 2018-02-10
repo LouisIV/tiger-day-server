@@ -24,6 +24,7 @@ def update_or_create(email, qr, notes, priority):
 
     # So we can see it in the console
     print("Email: %s, QR: %s" % (email, qr))
+    print("Notes: %s, P: %s", % (notes, priority))
     sys.stdout.flush()
 
     # Create or find the file
