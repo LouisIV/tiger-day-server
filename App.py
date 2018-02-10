@@ -44,14 +44,11 @@ def update_or_create(email, qr, notes, priority):
     print("`user_dict`: %s" % str(user_dict))
     sys.stdout.flush()
 
-    if not user_dict:
-        return jsonify({'drive_status': '500'})
-
     # Create the scan object, which we will upload.
     scan = {}
     scan['qr'] = qr
     scan['notes'] = notes
-    scan['priority'] = raing
+    scan['priority'] = priority
 
     # Add the object to the dictionary
     user_dict['scans'].append(scan)
